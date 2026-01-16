@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高中公民：民事訴訟大搶答</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 800px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .status-bar {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .question-box {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2980b9;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            background-color: #ecf0f1;
+        }
+
+        .answer-box {
+            font-size: 1.5rem;
+            color: #e74c3c;
+            min-height: 60px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .answer-box.visible {
+            opacity: 1;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+            font-weight: bold;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .btn-reveal {
+            background-color: #f39c12;
+            color: white;
+            box-shadow: 0 4px 0 #d35400;
+        }
+
+        .btn-next {
+            background-color: #27ae60;
+            color: white;
+            box-shadow: 0 4px 0 #219150;
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+            box-shadow: 0 4px 0 #7f8c8d;
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+
+        /* Scoreboard */
+        .scoreboard {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            width: 100%;
+        }
+
+        .team-scores {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .team {
+            background: #eee;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 5px;
+        }
+
+        .score-val {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .score-btn {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin: 5px;
+            border-radius: 50%;
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚖️ 高中公民：民事訴訟流程大搶答</h1>
+
+    <div class="container">
+        <div class="status-bar">
+            第 <span id="current-q">1</span> 題 / 共 30 題
+        </div>
+
+        <div class="question-box" id="question-text">
+            題目載入中...
+        </div>
+
+        <div class="answer-box" id="answer-text">
+            </div>
+
+        <div class="controls">
+            <button class="btn-reveal" onclick="showAnswer()">💡 顯示答案</button>
+            <button class="btn-next" onclick="nextQuestion()">➡️ 下一題</button>
+        </div>
+        
+        <button class="btn-reset" onclick="resetGame()">🔄 重新開始</button>
+
+        <div class="scoreboard">
+            <h3>計分板</h3>
+            <div class="team-scores">
+                <div class="team">
+                    <span>第一組</span>
+                    <span class="score-val" id="score1">0</span>
+                    <div>
+                        <button class="score-btn" onclick="updateScore(1, 1)">+</button>
+                        <button class="score-btn" style="background:#e74c3c" onclick="updateScore(1, -1)">-</button>
+                    </div>
+                </div>
+                <div class="team">
+                    <span>第二組</span>
+                    <span class="score-val" id="score2">0</span>
+                    <div>
+                        <button class="score-btn" onclick="updateScore(2, 1)">+</button>
+                        <button class="score-btn" style="background:#e74c3c" onclick="updateScore(2, -1)">-</button>
+                    </div>
+                </div>
+                <div class="team">
+                    <span>第三組</span>
+                    <span class="score-val" id="score3">0</span>
+                    <div>
+                        <button class="score-btn" onclick="updateScore(3, 1)">+</button>
+                        <button class="score-btn" style="background:#e74c3c" onclick="updateScore(3, -1)">-</button>
+                    </div>
+                </div>
+                 <div class="team">
+                    <span>第四組</span>
+                    <span class="score-val" id="score4">0</span>
+                    <div>
+                        <button class="score-btn" onclick="updateScore(4, 1)">+</button>
+                        <button class="score-btn" style="background:#e74c3c" onclick="updateScore(4, -1)">-</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 30題民事訴訟相關題目 (包含基礎概念、流程、原則)
+        const quizData = [
+            { q: "在民事訴訟中，主動向法院提出訴訟請求的人稱為什麼？", a: "原告" },
+            { q: "在民事訴訟中，被指控侵權或欠錢而被訴訟的人稱為什麼？", a: "被告" },
+            { q: "民事訴訟最主要的目的是解決哪一類型的糾紛？", a: "私權糾紛 (如財產、身分、契約)" },
+            { q: "在我國，民事訴訟的第一個步驟通常是向法院遞交什麼文件？", a: "起訴狀" },
+            { q: "「誰主張，誰舉證」說明了民事訴訟中的什麼原則？", a: "舉證責任" },
+            { q: "民事訴訟中，法官是否會像刑警一樣主動去調查證據？", a: "原則上不會 (採當事人進行主義)" },
+            { q: "如果對第一審判決不服，可以向上一級法院提出什麼？", a: "上訴" },
+            { q: "我國現行的司法制度中，普通法院的審級制度通常是幾級幾審？", a: "三級三審 (部分輕微案件為二審)" },
+            { q: "如果不想打官司，雙方在法庭外或法庭上互相讓步達成共識，這稱為什麼？", a: "和解" },
+            { q: "在某些情況下（如金額較小或家事案件），起訴前必須先經過什麼程序？", a: "強制調解" },
+            { q: "欠錢不還時，債權人可以向法院聲請哪一種命令，要求債務人付款，如果不異議就等同判決？", a: "支付命令" },
+            { q: "為了避免債務人脫產，債權人可以先向法院聲請將對方的財產暫時查封，這叫什麼？", a: "假扣押" },
+            { q: "民事訴訟判決確定後，如果對方還是不賠錢，原告可以向法院聲請什麼？", a: "強制執行" },
+            { q: "在民事法庭上，能夠合法代表當事人進行訴訟行為的專業人士是誰？", a: "律師 (訴訟代理人)" },
+            { q: "10萬元以下的小金額民事糾紛，適用哪一種訴訟程序？", a: "小額訴訟程序" },
+            { q: "民事訴訟中，如果原告覺得勝算不大，可以在判決前主動做什麼動作來結束訴訟？", a: "撤回起訴 (撤告)" },
+            { q: "法院寄來的開庭通知書上，通常會寫明當事人應該到哪裡報到？", a: "法院 (法庭)" },
+            { q: "民事訴訟的裁判費，原則上是由哪一方負擔？", a: "敗訴的一方" },
+            { q: "在法庭上負責紀錄開庭過程、製作筆錄的人員是誰？", a: "書記官" },
+            { q: "如果被告完全不理會法院的開庭通知，也不提出書狀，法院可能會做出什麼判決？", a: "一造辯論判決 (直接依原告主張判決)" },
+            { q: "民事訴訟中，證人如果在法庭上故意說謊，可能會觸犯什麼罪？", a: "偽證罪" },
+            { q: "「權利睡眠者，法律不予保護」是指如果過了法律規定的時間不行使權利，權利就會消滅。這個時間稱為什麼？", a: "時效 (消滅時效)" },
+            { q: "除了金錢賠償外，如果名譽受損，原告可以請求法院判決被告做什麼？", a: "回復名譽 (如登報道歉，但目前憲法法庭對強制道歉有解釋限制)" },
+            { q: "如果訴訟標的金額是 40 萬元，適用的是通常程序還是簡易程序？", a: "簡易程序 (50萬元以下)" },
+            { q: "當事人對於已經判決確定的案件，如果發現新證據，可以提出什麼特殊的救濟途徑？", a: "再審" },
+            { q: "民事訴訟中，法官的角色是主動介入調查真相，還是聽取雙方攻防後居中裁判？", a: "居中裁判 (被動性)" },
+            { q: "未滿 7 歲的小朋友如果把別人的車刮花了，在民事上通常由誰負賠償責任？", a: "法定代理人 (父母)" },
+            { q: "在車禍賠償訴訟中，行車紀錄器影片屬於哪一種類型的證據？", a: "物證" },
+            { q: "如果雙方在鄉鎮市公所的調解委員會調解成立，經法院核定後，其效力是否等同於法院判決？", a: "是 (具有執行力)" },
+            { q: "民事訴訟終結後，勝訴方拿到的確定判決書，可以用來做什麼？", a: "聲請強制執行" }
+        ];
+
+        let currentQuestionIndex = 0;
+        let scores = {1: 0, 2: 0, 3: 0, 4: 0};
+
+        // DOM Elements
+        const questionEl = document.getElementById("question-text");
+        const answerEl = document.getElementById("answer-text");
+        const countEl = document.getElementById("current-q");
+        const revealBtn = document.querySelector(".btn-reveal");
+
+        function loadQuestion() {
+            // Check boundaries
+            if(currentQuestionIndex >= quizData.length) {
+                questionEl.innerText = "🎉 題目已全部結束！";
+                answerEl.innerText = "";
+                revealBtn.disabled = true;
+                return;
+            }
+
+            // Load Content
+            questionEl.innerText = quizData[currentQuestionIndex].q;
+            answerEl.innerText = quizData[currentQuestionIndex].a;
+            countEl.innerText = currentQuestionIndex + 1;
+            
+            // Hide Answer
+            answerEl.classList.remove("visible");
+            revealBtn.disabled = false;
+        }
+
+        function showAnswer() {
+            answerEl.classList.add("visible");
+        }
+
+        function nextQuestion() {
+            if(currentQuestionIndex < quizData.length) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        function resetGame() {
+            if(confirm("確定要重新開始遊戲嗎？分數將被歸零。")) {
+                currentQuestionIndex = 0;
+                scores = {1: 0, 2: 0, 3: 0, 4: 0};
+                updateScoreDisplay();
+                loadQuestion();
+            }
+        }
+
+        function updateScore(team, points) {
+            scores[team] += points;
+            document.getElementById(`score${team}`).innerText = scores[team];
+        }
+
+        function updateScoreDisplay() {
+            for(let i=1; i<=4; i++) {
+                document.getElementById(`score${i}`).innerText = scores[i];
+            }
+        }
+
+        // Initialize
+        loadQuestion();
+
+    </script>
+</body>
+</html>
